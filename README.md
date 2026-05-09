@@ -5,8 +5,8 @@ mata kuliah **Praktikum Pemrograman Berorientasi Objek**.
 
 Game ini mendemonstrasikan ketujuh konsep OOP wajib:
 
-| Konsep | Bukti di kode |
-|---|---|
+| Konsep |
+|---|--|
 | **Encapsulation** | Semua field `private`/`protected`, akses lewat method publik. Lihat `ScoringSystem`, `PlayChar`, `SaveSystem`. |
 | **Inheritance** | `PlayChar`/`Enemies` extends `Entity`; `Weapon`/`Armour`/`Tools`/`Consumables` extends `Item`; semua manager extends `GameSystem`. |
 | **Polymorphism** | `GameManager.Tick()` iterasi `List<GameSystem>` dan memanggil `UpdateSystem()` — runtime memilih implementasi yang sesuai. |
@@ -27,8 +27,8 @@ Game ini mendemonstrasikan ketujuh konsep OOP wajib:
 - Maven sudah termasuk di dalam IntelliJ, tidak perlu instalasi terpisah
   **Langkah instalasi:**
 
-1. Extract file ZIP project → akan muncul folder `rwr-v2`
-2. Buka IntelliJ IDEA → **File → Open** → pilih folder `rwr-v2`
+1. Clone repository ini → masuk ke folder `runningwater-remains`
+2. Buka IntelliJ IDEA → **File → Open** → pilih folder `runningwater-remains`
 3. IntelliJ akan otomatis mendeteksi `pom.xml` dan memulai Maven sync — tunggu hingga selesai (lihat progress bar di pojok kanan bawah)
 4. Saat pertama kali sync, Maven mengunduh JavaFX dari internet (termasuk native library `mac-aarch64` untuk chip M-series secara otomatis)
 5. Setelah sync selesai, buka panel **Maven** di sisi kanan IntelliJ
@@ -36,7 +36,7 @@ Game ini mendemonstrasikan ketujuh konsep OOP wajib:
 7. Game akan terbuka
    **Alternatif lewat Terminal:**
 ```bash
-cd rwr-v2
+cd runningwater-remains
 mvn javafx:run
 ```
  
@@ -51,16 +51,16 @@ mvn javafx:run
 - Maven sudah termasuk di dalam IntelliJ, tidak perlu instalasi terpisah
   **Langkah instalasi:**
 
-1. Extract file ZIP project → akan muncul folder `rwr-v2`
-2. Buka IntelliJ IDEA → **File → Open** → pilih folder `rwr-v2`
+1. Clone repository ini → masuk ke folder `runningwater-remains`
+2. Buka IntelliJ IDEA → **File → Open** → pilih folder `runningwater-remains`
 3. IntelliJ akan otomatis mendeteksi `pom.xml` dan memulai Maven sync — tunggu hingga selesai (lihat progress bar di pojok kanan bawah)
 4. Saat pertama kali sync, Maven mengunduh JavaFX dari internet (native library `win` untuk Windows diunduh otomatis)
 5. Setelah sync selesai, buka panel **Maven** di sisi kanan IntelliJ
-6. Ekspansi `rwr-v2 → Plugins → javafx` → klik dua kali **`javafx:run`**
+6. Ekspansi `runningwater-remains → Plugins → javafx` → klik dua kali **`javafx:run`**
 7. Game akan terbuka
    **Alternatif lewat Command Prompt atau PowerShell:**
 ```cmd
-cd rwr-v2
+cd runningwater-remains
 mvn javafx:run
 ```
 
@@ -150,13 +150,9 @@ runningwater-remains/
 **Q: "Error: JavaFX runtime components are missing".**
 A: Jangan jalankan dengan `java -jar` polos. Pakai `mvn javafx:run`.
 
-**Q: Maven tidak menemukan `javafx-maven-plugin`.**
-A: Pastikan terhubung ke internet saat pertama build. Maven mengunduhnya
-ke `~/.m2/repository`. Jika gagal, jalankan `mvn -U javafx:run` (force update).
-
 **Q: Save file ada di mana?**
 A: Di folder kerja saat menjalankan game, dengan nama `runningwater_save.txt`.
-Format teks polos (mirip INI) — bisa dibuka dengan editor apa saja.
+Format teks polos, bisa dibuka dengan editor apa saja.
 
 **Q: Tidak ada file save tetapi tombol Load aktif.**
 A: Reload IntelliJ (kontroler mengecek `runningwater_save.txt` di working
