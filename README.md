@@ -5,16 +5,16 @@ mata kuliah **Praktikum Pemrograman Berorientasi Objek**.
 
 Game ini mendemonstrasikan ketujuh konsep OOP wajib:
 
-| Konsep |
-|---|--|
-| **Encapsulation** | Semua field `private`/`protected`, akses lewat method publik. Lihat `ScoringSystem`, `PlayChar`, `SaveSystem`. |
-| **Inheritance** | `PlayChar`/`Enemies` extends `Entity`; `Weapon`/`Armour`/`Tools`/`Consumables` extends `Item`; semua manager extends `GameSystem`. |
-| **Polymorphism** | `GameManager.Tick()` iterasi `List<GameSystem>` dan memanggil `UpdateSystem()` — runtime memilih implementasi yang sesuai. |
+| Konsep | Implementasi                                                                                                                                                                                               |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Encapsulation** | Semua field `private`/`protected`, akses lewat method publik. Lihat `ScoringSystem`, `PlayChar`, `SaveSystem`.                                                                                             |
+| **Inheritance** | `PlayChar`/`Enemies` extends `Entity`; `Weapon`/`Armour`/`Tools`/`Consumables` extends `Item`; semua manager extends `GameSystem`.                                                                         |
+| **Polymorphism** | `GameManager.Tick()` iterasi `List<GameSystem>` dan memanggil `UpdateSystem()` — runtime memilih implementasi yang sesuai.                                                                                 |
 | **Method Overloading** | `ScoringSystem.AddScore(int)` vs `AddScore(int, float)`; `RewardSystem.GrantReward()` vs `GrantReward(float)`; `UIManager.ShowMenu(String)` vs `ShowMenu(String, boolean)`; `Item.Use()` vs `Use(Entity)`. |
-| **Method Overriding** | `Enemies.TakeDamage()` dan `PlayChar.TakeDamage()` override `Entity.TakeDamage()`; semua subclass `GameSystem` override `Initialize()` dan `UpdateSystem()`. |
-| **Abstract Class** | `Entity`, `Item`, `GameSystem`. |
-| **Interface** | `ISavable` — diimplementasikan oleh `PlayChar`, `Stages`, `GameManager`; dikonsumsi oleh `SaveSystem`. |
-
+| **Method Overriding** | `Enemies.TakeDamage()` dan `PlayChar.TakeDamage()` override `Entity.TakeDamage()`; semua subclass `GameSystem` override `Initialize()` dan `UpdateSystem()`.                                               |
+| **Abstract Class** | `Entity`, `Item`, `GameSystem`.                                                                                                                                                                            |
+| **Interface** | `ISavable` — diimplementasikan oleh `PlayChar`, `Stages`, `GameManager`; dikonsumsi oleh `SaveSystem`.                                                                                                     |
+ 
 ---
 
 ## 🚀 Cara Instalasi & Menjalankan
