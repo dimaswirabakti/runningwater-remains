@@ -1,0 +1,26 @@
+# Maven
+target/
+out/
+sources.txt
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Eclipse / VSCode
+.classpath
+.project
+.settings/
+.vscode/
+
+# Build outputs
+*.class
+*.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Save files (opsional — kalau mau exclude save dari Git)
+runningwater_save.txt
