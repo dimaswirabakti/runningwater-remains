@@ -52,9 +52,6 @@ public class CombatScreen implements Screen {
     private final Set<Enemies> rewarded = new HashSet<>();
 
     private boolean abilityUsed = false;
-    private static final String[] ABILITY_OPTIONS = {"Heal", "Smash"};
-    private boolean choosingAbility = false;
-    private int selectedAbilityOption = 0;
     private int selectedEnemyIndex = 0;
 
     private boolean pickingItem = false;
@@ -72,11 +69,6 @@ public class CombatScreen implements Screen {
     @Override
     public void handleInput(InputHandler input) {
         if (!waitingForInput) return;
-
-        if (choosingAbility) {
-            handleAbilityChoiceInput(input);
-            return;
-        }
 
         if (pickingItem) {
             handleItemPickerInput(input);
@@ -147,12 +139,14 @@ public class CombatScreen implements Screen {
                 pt.play();
                 break;
 
-            case 1: // Ability (heal/damage)
+            case 1: // Ability (heal)
                 if (abilityUsed) {
                     addLog("✦  Ability sudah digunakan!");
                 } else {
-                    choosingAbility = true;
-                    selectedAbilityOption = 0;
+                    player.UseAbility();
+                    abilityUsed = true;
+                    score.AddScore(10, 1.0f);
+                    addLog("✦  " + player.getName() + " menggunakan Ability! +30 HP");
                 }
                 break;
 
@@ -380,9 +374,7 @@ public class CombatScreen implements Screen {
         if (pickingItem) {
             drawItemPicker(gc, player);
         }
-        if (choosingAbility) {
-            drawAbilityChooser(gc);
-        }
+
 
         drawTopHUD(gc, gm, combat);
     }
@@ -514,48 +506,6 @@ public class CombatScreen implements Screen {
         gc.setStroke(Color.web("#5fe8ff"));
         gc.setLineWidth(3);
         gc.strokeRoundRect(ex - 46, ey - 10, 92, 108, 12, 12);
-    }
-
-    private void drawAbilityChooser(GraphicsContext gc) {
-        double pw = 360;
-        double ph = 140;
-        double px = (W - pw) / 2;
-        double py = (H - ph) / 2;
-
-        gc.setFill(Color.web("#000000", 0.75));
-        gc.fillRect(0, 0, W, H);
-        gc.setFill(Color.web("#1a2a40"));
-        gc.fillRoundRect(px, py, pw, ph, 12, 12);
-        gc.setStroke(Color.web("#4fc3f7"));
-        gc.setLineWidth(1.8);
-        gc.strokeRoundRect(px, py, pw, ph, 12, 12);
-
-        gc.setFont(Font.font("Helvetica Neue", FontWeight.BOLD, 16));
-        gc.setFill(Color.web("#a8def8"));
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("Pilih Ability", W / 2, py + 30);
-
-        for (int i = 0; i < ABILITY_OPTIONS.length; i++) {
-            boolean sel = (i == selectedAbilityOption);
-            double bx = px + 20 + i * 170;
-            double by = py + 45;
-            double bw = 150;
-            double bh = 55;
-
-            gc.setFill(sel ? Color.web("#0f4b7a") : Color.web("#0c324e"));
-            gc.fillRoundRect(bx, by, bw, bh, 10, 10);
-            gc.setStroke(sel ? Color.web("#7ee3ff") : Color.web("#3a6d9a"));
-            gc.setLineWidth(2);
-            gc.strokeRoundRect(bx, by, bw, bh, 10, 10);
-
-            gc.setFont(Font.font("Helvetica Neue", FontWeight.BOLD, 14));
-            gc.setFill(sel ? Color.web("#e0f7ff") : Color.web("#afcfe6"));
-            gc.fillText(ABILITY_OPTIONS[i], bx + bw / 2, by + 28);
-        }
-
-        gc.setFont(Font.font("Helvetica Neue", FontWeight.NORMAL, 11));
-        gc.setFill(Color.web("#b8d7ee"));
-        gc.fillText("← → Pilih   ENTER Konfirmasi   ESC Batal", W / 2, py + ph - 12);
     }
 
     private void drawItemPicker(GraphicsContext gc, PlayChar player) {
