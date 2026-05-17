@@ -1,12 +1,12 @@
 package com.runningwater.system;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.runningwater.core.Entity;
 import com.runningwater.core.GameSystem;
 import com.runningwater.entity.Enemies;
 import com.runningwater.entity.PlayChar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Mengelola alur combat: turn order, perilaku enemy, perhitungan damage.
@@ -49,8 +49,13 @@ public class CombatSystem extends GameSystem {
 
     /** Player menyerang target pertama yang masih hidup. */
     public void PlayerAttack() {
+        PlayerAttack(0);
+    }
+
+    /** Player menyerang target terpilih, melewati enemy yang sudah mati. */
+    public void PlayerAttack(int targetIndex) {
         if (currentEnemies.isEmpty()) return;
-        Enemies target = findFirstAlive();
+        Enemies target = findAliveByIndex(targetIndex);
         if (target == null) return;
         int hpBefore = target.getHealth();
         player.Attack(target);
@@ -95,6 +100,18 @@ public class CombatSystem extends GameSystem {
     private Enemies findFirstAlive() {
         for (Enemies e : currentEnemies) {
             if (e.isAlive()) return e;
+        }
+        return null;
+    }
+
+    private Enemies findAliveByIndex(int targetIndex) {
+        if (currentEnemies.isEmpty()) return null;
+        int n = currentEnemies.size();
+        int start = (targetIndex % n + n) % n;
+        for (int i = 0; i < n; i++) {
+            int idx = (start + i) % n;
+            Enemies enemy = currentEnemies.get(idx);
+            if (enemy.isAlive()) return enemy;
         }
         return null;
     }
