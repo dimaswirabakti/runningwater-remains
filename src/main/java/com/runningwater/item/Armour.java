@@ -32,7 +32,9 @@ public class Armour extends Item {
 
     @Override
     public String GetInfo() {
-        return super.GetInfo() + " [Def +" + defenseBonus + "]";
+        String info = super.GetInfo() + " [Def +" + defenseBonus + "]";
+        if (isEquipped) info += " [EQUIPPED]";
+        return info;
     }
 
     public int getDefenseBonus() { return defenseBonus; }
