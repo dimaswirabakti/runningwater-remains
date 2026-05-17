@@ -1,5 +1,10 @@
 package com.runningwater.screen;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.runningwater.core.Item;
 import com.runningwater.engine.AnimationPlayer;
 import com.runningwater.engine.AnimationPlayer.AnimState;
@@ -13,6 +18,7 @@ import com.runningwater.system.CombatSystem;
 import com.runningwater.system.InputHandler;
 import com.runningwater.system.RewardSystem;
 import com.runningwater.system.ScoringSystem;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -23,11 +29,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Layar Combat visual turn-based.
  * Menggantikan combat_screen.fxml + CombatController.
@@ -37,51 +38,57 @@ public class CombatScreen implements Screen {
     private static final double W = 900;
     private static final double H = 600;
 
-    // Pilihan aksi
     private static final String[] ACTIONS = {"Attack", "Ability", "Use Item", "Flee"};
     private int selectedAction = 0;
 
-    // Animasi
     private final AnimationPlayer playerAnim = new AnimationPlayer();
     private final List<AnimationPlayer> enemyAnims = new ArrayList<>();
 
-    // State
     private boolean waitingForInput = true;
     private double  screenShake     = 0;
     private double  time            = 0;
 
-    // Log visual (hanya 5 baris terakhir)
     private final List<String> logLines = new ArrayList<>();
-
-    // Track enemy yang sudah dapat XP/score
     private final Set<Enemies> rewarded = new HashSet<>();
 
-    // State item picker
+    private boolean abilityUsed = false;
+    private static final String[] ABILITY_OPTIONS = {"Heal", "Smash"};
+    private boolean choosingAbility = false;
+    private int selectedAbilityOption = 0;
+    private int selectedEnemyIndex = 0;
+
     private boolean pickingItem = false;
     private int     itemIndex   = 0;
 
     public CombatScreen() {
-        // Satu AnimationPlayer per enemy
         GameManager gm = GameManager.getInstance();
         for (int i = 0; i < gm.getCombatSystem().getCurrentEnemies().size(); i++) {
             enemyAnims.add(new AnimationPlayer());
         }
-        // Sync combat log
         logLines.addAll(gm.getCombatSystem().getCombatLog());
         trimLog();
     }
 
-    // ── Input ────────────────────────────────────────────────────────────────
-
     @Override
     public void handleInput(InputHandler input) {
         if (!waitingForInput) return;
+
+        if (choosingAbility) {
+            handleAbilityChoiceInput(input);
+            return;
+        }
 
         if (pickingItem) {
             handleItemPickerInput(input);
             return;
         }
 
+        if (input.isJustPressed(KeyCode.LEFT) && selectedAction == 0) {
+            moveSelectedEnemy(-1);
+        }
+        if (input.isJustPressed(KeyCode.RIGHT) && selectedAction == 0) {
+            moveSelectedEnemy(1);
+        }
         if (input.isJustPressed(KeyCode.UP)) {
             selectedAction = (selectedAction - 1 + ACTIONS.length) % ACTIONS.length;
         }
@@ -119,8 +126,9 @@ public class CombatScreen implements Screen {
                 waitingForInput = false;
                 playerAnim.setState(AnimState.ATTACK);
                 screenShake = 0.25;
-                combat.PlayerAttack();
-                score.AddScore(30);          // overloading versi 1
+                combat.PlayerAttack(selectedEnemyIndex);
+                abilityUsed = false; // reset ability cooldown after attacking
+                score.AddScore(30);
                 checkEnemyKills(gm);
                 syncLog(combat);
                 javafx.animation.PauseTransition pt =
@@ -139,16 +147,13 @@ public class CombatScreen implements Screen {
                 pt.play();
                 break;
 
-            case 1: // Ability (heal)
-                player.UseAbility();
-                score.AddScore(10, 1.0f);   // overloading versi 2
-                addLog("✦  " + player.getName() + " menggunakan Ability! +" + 15 + " HP");
-                if (player.isAlive()) {
-                    combat.EnemyTurn();
-                    syncLog(combat);
+            case 1: // Ability (heal/damage)
+                if (abilityUsed) {
+                    addLog("✦  Ability sudah digunakan!");
+                } else {
+                    choosingAbility = true;
+                    selectedAbilityOption = 0;
                 }
-                combat.ProcessTurn();
-                checkEndConditions(gm);
                 break;
 
             case 2: // Item
@@ -194,11 +199,6 @@ public class CombatScreen implements Screen {
             addLog("🔧  " + item.getItemName() + " digunakan!");
         }
 
-        if (player.isAlive()) {
-            combat.EnemyTurn();
-            syncLog(combat);
-        }
-        combat.ProcessTurn();
         checkEndConditions(gm);
     }
 
@@ -206,7 +206,7 @@ public class CombatScreen implements Screen {
         for (Enemies e : gm.getCombatSystem().getCurrentEnemies()) {
             if (!e.isAlive() && !rewarded.contains(e)) {
                 rewarded.add(e);
-                gm.getScoringSystem().AddScore(50, 1.5f);   // overloading versi 2
+                gm.getScoringSystem().AddScore(50, 1.5f);
                 gm.getPlayer().GainXP(40);
                 int idx = gm.getCombatSystem().getCurrentEnemies().indexOf(e);
                 if (idx >= 0 && idx < enemyAnims.size()) {
@@ -217,11 +217,38 @@ public class CombatScreen implements Screen {
     }
 
     private void triggerEnemyHurtAnims(CombatSystem combat) {
-        // Player hurt anim
         if (!GameManager.getInstance().getPlayer().isAlive()) {
             playerAnim.setState(AnimState.DEAD);
         } else {
             playerAnim.setState(AnimState.HURT);
+        }
+    }
+
+    private void moveSelectedEnemy(int delta) {
+        CombatSystem combat = GameManager.getInstance().getCombatSystem();
+        List<Enemies> enemies = combat.getCurrentEnemies();
+        if (enemies.isEmpty()) return;
+
+        int n = enemies.size();
+        int start = (selectedEnemyIndex % n + n) % n;
+        for (int i = 1; i <= n; i++) {
+            int next = (start + delta * i + n) % n;
+            if (enemies.get(next).isAlive()) {
+                selectedEnemyIndex = next;
+                return;
+            }
+        }
+    }
+
+    private void ensureSelectedEnemyAlive() {
+        CombatSystem combat = GameManager.getInstance().getCombatSystem();
+        List<Enemies> enemies = combat.getCurrentEnemies();
+        if (enemies.isEmpty()) return;
+        if (selectedEnemyIndex < 0 || selectedEnemyIndex >= enemies.size()) {
+            selectedEnemyIndex = 0;
+        }
+        if (!enemies.get(selectedEnemyIndex).isAlive()) {
+            moveSelectedEnemy(1);
         }
     }
 
@@ -240,8 +267,8 @@ public class CombatScreen implements Screen {
         RewardSystem reward = gm.getRewardSystem();
         PlayChar     player = gm.getPlayer();
 
-        Item loot  = reward.GrantReward();            // overloading versi 1
-        Item bonus = reward.GrantReward(0.95f);       // overloading versi 2
+        Item loot  = reward.GrantReward();
+        Item bonus = reward.GrantReward(0.95f);
 
         if (loot  != null) { player.addItem(loot);  addLog("🎁 Loot: "  + loot.GetInfo()); }
         if (bonus != null) { player.addItem(bonus); addLog("⭐ Bonus: " + bonus.GetInfo()); }
@@ -249,7 +276,6 @@ public class CombatScreen implements Screen {
         gm.getCombatSystem().EndCombat();
         gm.getActiveStage().markCleared();
 
-        // Sinkronkan score
         int delta = gm.getScoringSystem().GetScore() - player.getScore();
         if (delta > 0) player.addScore(delta);
 
@@ -280,7 +306,7 @@ public class CombatScreen implements Screen {
         while (logLines.size() > 6) logLines.remove(0);
     }
 
-    // ── Update ───────────────────────────────────────────────────────────────
+
 
     @Override
     public void update(double dt) {
@@ -291,7 +317,7 @@ public class CombatScreen implements Screen {
         for (AnimationPlayer ap : enemyAnims) ap.update(dt);
     }
 
-    // ── Render ───────────────────────────────────────────────────────────────
+
 
     @Override
     public void render(GraphicsContext gc) {
@@ -299,7 +325,7 @@ public class CombatScreen implements Screen {
         PlayChar     player = gm.getPlayer();
         CombatSystem combat = gm.getCombatSystem();
 
-        // Screen shake
+
         double shakeX = 0, shakeY = 0;
         if (screenShake > 0) {
             shakeX = (Math.random() - 0.5) * screenShake * 16;
@@ -308,18 +334,19 @@ public class CombatScreen implements Screen {
         gc.save();
         gc.translate(shakeX, shakeY);
 
-        // ── Background ───────────────────────────────────────────────────────
+
         drawBackground(gc);
 
-        // ── Ground platform ──────────────────────────────────────────────────
+
         drawGround(gc);
 
-        // ── Enemy sprites ─────────────────────────────────────────────────────
+
         List<Enemies> enemies = combat.getCurrentEnemies();
         int aliveCount = 0;
         for (Enemies e : enemies) if (e.isAlive()) aliveCount++;
 
         double enemyStartX = 560 + (enemies.size() == 1 ? 50 : 0);
+        ensureSelectedEnemyAlive();
         for (int i = 0; i < enemies.size(); i++) {
             Enemies e = enemies.get(i);
             double ex = enemyStartX + i * 110;
@@ -329,29 +356,34 @@ public class CombatScreen implements Screen {
             anim.render(gc, ex, ey, 72, 80, enemyCol, true);
             drawEntityHPBar(gc, ex - 36, ey + 50, 72, e.getHealth(), e.getMaxHealth(),
                 Color.web("#cc2222"), e.getName());
+            if (waitingForInput && selectedAction == 0 && i == selectedEnemyIndex && e.isAlive()) {
+                drawEnemySelection(gc, ex, ey);
+            }
         }
 
-        // ── Player sprite ─────────────────────────────────────────────────────
+
         playerAnim.render(gc, 210, 240, 80, 90, Color.web("#3a7ad5"), false);
         drawEntityHPBar(gc, 170, 295, 80, player.getHealth(), player.getMaxHealth(),
             Color.web("#22aa55"), player.getName());
 
         gc.restore();
 
-        // ── Combat log ───────────────────────────────────────────────────────
+
         drawCombatLog(gc);
 
-        // ── Action menu ───────────────────────────────────────────────────────
+
         if (waitingForInput && !pickingItem) {
             drawActionMenu(gc);
         }
 
-        // ── Item picker ───────────────────────────────────────────────────────
+
         if (pickingItem) {
             drawItemPicker(gc, player);
         }
+        if (choosingAbility) {
+            drawAbilityChooser(gc);
+        }
 
-        // ── Ronde & Score ─────────────────────────────────────────────────────
         drawTopHUD(gc, gm, combat);
     }
 
@@ -465,11 +497,65 @@ public class CombatScreen implements Screen {
 
             gc.setFont(Font.font("Helvetica Neue", FontWeight.NORMAL, 12));
             gc.setFill(sel ? Color.web("#e0f0ff") : Color.web("#6a9abb"));
-            gc.fillText(ACTIONS[i], bx + bw / 2, menuY + 46);
+            String actionLabel = ACTIONS[i];
+            if (i == 1 && abilityUsed) actionLabel += " (used)";
+            gc.fillText(actionLabel, bx + bw / 2, menuY + 46);
         }
         gc.setFont(Font.font("Helvetica Neue", FontWeight.NORMAL, 11));
         gc.setFill(Color.web("#2a4a60"));
-        gc.fillText("↑ ↓  Pilih     ENTER  Konfirmasi", W / 2, H - 8);
+        if (selectedAction == 0) {
+            gc.fillText("← →  Pilih Musuh   ↑ ↓  Pilih Aksi   ENTER  Konfirmasi", W / 2, H - 8);
+        } else {
+            gc.fillText("↑ ↓  Pilih     ENTER  Konfirmasi", W / 2, H - 8);
+        }
+    }
+
+    private void drawEnemySelection(GraphicsContext gc, double ex, double ey) {
+        gc.setStroke(Color.web("#5fe8ff"));
+        gc.setLineWidth(3);
+        gc.strokeRoundRect(ex - 46, ey - 10, 92, 108, 12, 12);
+    }
+
+    private void drawAbilityChooser(GraphicsContext gc) {
+        double pw = 360;
+        double ph = 140;
+        double px = (W - pw) / 2;
+        double py = (H - ph) / 2;
+
+        gc.setFill(Color.web("#000000", 0.75));
+        gc.fillRect(0, 0, W, H);
+        gc.setFill(Color.web("#1a2a40"));
+        gc.fillRoundRect(px, py, pw, ph, 12, 12);
+        gc.setStroke(Color.web("#4fc3f7"));
+        gc.setLineWidth(1.8);
+        gc.strokeRoundRect(px, py, pw, ph, 12, 12);
+
+        gc.setFont(Font.font("Helvetica Neue", FontWeight.BOLD, 16));
+        gc.setFill(Color.web("#a8def8"));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("Pilih Ability", W / 2, py + 30);
+
+        for (int i = 0; i < ABILITY_OPTIONS.length; i++) {
+            boolean sel = (i == selectedAbilityOption);
+            double bx = px + 20 + i * 170;
+            double by = py + 45;
+            double bw = 150;
+            double bh = 55;
+
+            gc.setFill(sel ? Color.web("#0f4b7a") : Color.web("#0c324e"));
+            gc.fillRoundRect(bx, by, bw, bh, 10, 10);
+            gc.setStroke(sel ? Color.web("#7ee3ff") : Color.web("#3a6d9a"));
+            gc.setLineWidth(2);
+            gc.strokeRoundRect(bx, by, bw, bh, 10, 10);
+
+            gc.setFont(Font.font("Helvetica Neue", FontWeight.BOLD, 14));
+            gc.setFill(sel ? Color.web("#e0f7ff") : Color.web("#afcfe6"));
+            gc.fillText(ABILITY_OPTIONS[i], bx + bw / 2, by + 28);
+        }
+
+        gc.setFont(Font.font("Helvetica Neue", FontWeight.NORMAL, 11));
+        gc.setFill(Color.web("#b8d7ee"));
+        gc.fillText("← → Pilih   ENTER Konfirmasi   ESC Batal", W / 2, py + ph - 12);
     }
 
     private void drawItemPicker(GraphicsContext gc, PlayChar player) {
