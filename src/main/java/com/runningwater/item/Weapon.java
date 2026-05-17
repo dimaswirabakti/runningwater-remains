@@ -34,7 +34,9 @@ public class Weapon extends Item {
 
     @Override
     public String GetInfo() {
-        return super.GetInfo() + " [Atk +" + attackBonus + "]";
+        String info = super.GetInfo() + " [Atk +" + attackBonus + "]";
+        if (isEquipped) info += " [EQUIPPED]";
+        return info;
     }
 
     public int getAttackBonus() { return attackBonus; }
