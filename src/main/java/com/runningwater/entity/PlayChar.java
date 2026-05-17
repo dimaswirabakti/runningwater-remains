@@ -1,16 +1,16 @@
 package com.runningwater.entity;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.runningwater.core.Entity;
 import com.runningwater.core.ISavable;
 import com.runningwater.core.Item;
 import com.runningwater.core.Vector2;
 import com.runningwater.item.Armour;
 import com.runningwater.item.Weapon;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 // Karakter yang dikendalikan player.
 public class PlayChar extends Entity implements ISavable {
@@ -75,8 +75,26 @@ public class PlayChar extends Entity implements ISavable {
     public void removeItem(Item item) { inventory.remove(item); }
     public List<Item> getInventory() { return inventory; }
 
-    public void equipWeapon(Weapon w) { this.equippedWeapon = w; }
-    public void equipArmour(Armour a) { this.equippedArmour = a; }
+    public void equipWeapon(Weapon w) {
+        if (this.equippedWeapon != null) {
+            this.equippedWeapon.Unequip();
+        }
+        this.equippedWeapon = w;
+        if (w != null) {
+            w.Equip();
+        }
+    }
+
+    public void equipArmour(Armour a) {
+        if (this.equippedArmour != null) {
+            this.equippedArmour.Unequip();
+        }
+        this.equippedArmour = a;
+        if (a != null) {
+            a.Equip();
+        }
+    }
+
     public Weapon getEquippedWeapon() { return equippedWeapon; }
     public Armour getEquippedArmour() { return equippedArmour; }
 
