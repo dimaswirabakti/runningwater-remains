@@ -3,8 +3,6 @@ package com.runningwater.entity;
 import com.runningwater.core.Entity;
 import com.runningwater.core.Vector2;
 
-// Lawan yang dikendalikan sistem (AI sederhana).
-
 public class Enemies extends Entity {
     private float aggroRange;
     private int damage;
@@ -17,12 +15,10 @@ public class Enemies extends Entity {
         this.enemyType = enemyType;
     }
 
-    /** Menyerang target — mengurangi health-nya sebesar damage Enemies ini. */
     public void Attack(Entity target) {
         target.TakeDamage(damage);
     }
 
-    /** AI sederhana: bergerak ke kanan secara terus-menerus. */
     public void Patrol() {
         Move(new Vector2(1f, 0f));
     }
@@ -35,7 +31,6 @@ public class Enemies extends Entity {
 
     @Override
     public void TakeDamage(int dmg) {
-        // Override: Enemies punya pengurangan damage natural berbasis level
         int reduction = level / 2;
         int actual = Math.max(1, dmg - reduction);
         super.TakeDamage(actual);

@@ -5,9 +5,7 @@ import com.runningwater.screen.Screen;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-/**
- * Mengelola Screen yang sedang aktif dan efek fade antar-screen.
- */
+//  Mengelola Screen yang sedang aktif dan efek fade antar-screen.
 public class UIManager extends GameSystem {
 
     private Screen currentScreen;
@@ -31,14 +29,14 @@ public class UIManager extends GameSystem {
     @Override
     public void UpdateSystem() {}
 
-    // ── Screen management ────────────────────────────────────────────────────
+    // SCREEN MANAGEMENT
 
-    /** OVERLOADING versi 1 — ganti screen tanpa animasi. */
+    // OVERLOADING 1: ganti screen tanpa animasi.
     public void ShowMenu(Screen screen) {
         ShowMenu(screen, false);
     }
 
-    /** OVERLOADING versi 2 — ganti screen dengan animasi fade jika animated=true. */
+    // OVERLOADING 2: ganti screen dengan animasi fade jika animated=true.
     public void ShowMenu(Screen screen, boolean animated) {
         if (animated) {
             nextScreen = screen;
@@ -52,7 +50,7 @@ public class UIManager extends GameSystem {
 
     public Screen getCurrentScreen() { return currentScreen; }
 
-    // ── Update dipanggil setiap frame oleh game loop ─────────────────────────
+    // UPDATE DIPANGGIL SETIAP FRAME OLEH GAME LOOP
 
     public void updateFade(double deltaTime) {
         if (fadingOut) {
@@ -71,7 +69,7 @@ public class UIManager extends GameSystem {
         }
     }
 
-    /** Gambar overlay hitam di atas seluruh kanvas untuk efek fade. */
+    // Gambar overlay hitam di atas seluruh kanvas untuk efek fade.
     public void renderFade(GraphicsContext gc, double w, double h) {
         if (fadeAlpha > 0.0) {
             gc.save();

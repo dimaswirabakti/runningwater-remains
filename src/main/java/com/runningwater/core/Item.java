@@ -1,9 +1,5 @@
 package com.runningwater.core;
 
-/**
- * Abstract class untuk seluruh item yang dapat dimiliki/digunakan.
- * Subclass: Weapon, Armour, Tools, Consumables.
- */
 public abstract class Item {
     protected String itemId;
     protected String itemName;
@@ -18,7 +14,7 @@ public abstract class Item {
     /** Menggunakan item tanpa target spesifik (efek pada self). */
     public abstract void Use();
 
-    /** Menggunakan item dengan target tertentu — overloading dari Use(). */
+    /** Menggunakan item dengan target tertentu: overloading dari Use(). */
     public abstract void Use(Entity target);
 
     public String GetInfo() {
@@ -29,7 +25,6 @@ public abstract class Item {
     public String getItemName() { return itemName; }
     public String getDescription() { return description; }
 
-    /** Override toString agar enak ditampilkan di ChoiceDialog JavaFX. */
     @Override
     public String toString() {
         return GetInfo();

@@ -13,9 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-/**
- * Layar Main Menu — digambar manual ke Canvas.
- */
+// Layar Main Menu.
 public class MainMenuScreen implements Screen {
 
     private static final double W = 900;
@@ -139,7 +137,7 @@ public class MainMenuScreen implements Screen {
         GameManager gm = GameManager.getInstance();
         switch (selected) {
             case 0: // New Game
-                String name = "Hero"; // nama default — dialog input ditampilkan di GameScreen
+                String name = "Hero";
                 gm.startNewGame(name);
                 gm.getUIManager().ShowMenu(new GameScreen(), true);
                 break;

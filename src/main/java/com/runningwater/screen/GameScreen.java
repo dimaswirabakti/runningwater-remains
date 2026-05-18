@@ -21,10 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-/**
- * Layar Peta Stage — menggambar tile map sederhana dan status player.
- * Menggantikan game_screen.fxml + GameController.
- */
+// Layar Peta Stage: menggambar tile map sederhana dan status player.
 public class GameScreen implements Screen {
 
     private static final double W = 900;

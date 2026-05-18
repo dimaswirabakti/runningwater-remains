@@ -13,16 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Menangani serialisasi data ke/dari file.
- * Format file sangat sederhana (INI-style) supaya tidak butuh library tambahan.
- *
- * Contoh:
- *   [PlayChar]
- *   name=Hero
- *   level=2
- *   score=300
- */
 public class SaveSystem extends GameSystem {
     private final String saveFilePath;
 

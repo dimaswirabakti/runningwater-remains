@@ -5,10 +5,6 @@ import javafx.scene.image.Image;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Memuat dan menyimpan semua Image sekali saja saat startup.
- * Mencegah loading ulang gambar setiap frame.
- */
 public class AssetManager {
 
     private static AssetManager instance;
@@ -23,14 +19,14 @@ public class AssetManager {
 
     /**
      * Muat semua asset gambar di awal game.
-     * Untuk sekarang semua elemen digambar geometri — method ini
-     * disiapkan agar mudah ditambahkan PNG sprite di masa depan.
+     * Untuk sekarang semua elemen digambar geometri,
+     * method ini disiapkan agar mudah ditambahkan PNG sprite di masa depan.
      *
      * Contoh penambahan sprite:
      *   load("player_idle", "/assets/sprites/player_idle.png");
      */
     public void loadAll() {
-        // Tidak ada PNG eksternal — semua digambar shapes.
+        // Tidak ada PNG eksternal, semua digambar shapes.
         // Tambahkan load(...) di sini saat asset PNG tersedia.
     }
 

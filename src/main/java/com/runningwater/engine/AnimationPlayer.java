@@ -3,10 +3,6 @@ package com.runningwater.engine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-/**
- * Mengelola animasi berbasis frame.
- * Untuk versi ini animasi digambar sebagai bentuk geometri berwarna karena tidak ada sprite PNG eksternal.
- */
 public class AnimationPlayer {
 
     public enum AnimState { IDLE, ATTACK, HURT, DEAD }
@@ -15,19 +11,17 @@ public class AnimationPlayer {
     private double    timer      = 0;
     private int       frame      = 0;
 
-    // Durasi tiap frame dalam detik
     private static final double IDLE_FRAME_DUR   = 0.5;
     private static final double ATTACK_FRAME_DUR = 0.08;
     private static final double HURT_FRAME_DUR   = 0.1;
     private static final double DEAD_FRAME_DUR   = 0.12;
 
-    // Jumlah frame tiap animasi
     private static final int IDLE_FRAMES   = 2;
     private static final int ATTACK_FRAMES = 5;
     private static final int HURT_FRAMES   = 3;
     private static final int DEAD_FRAMES   = 4;
 
-    private double offsetX = 0; // geser horizontal saat animasi serangan
+    private double offsetX = 0;
 
     public void setState(AnimState newState) {
         if (this.state != newState) {
@@ -66,13 +60,13 @@ public class AnimationPlayer {
     /**
      * Gambar karakter sebagai shapes geometri berwarna.
      *
-     * @param gc      GraphicsContext kanvas
-     * @param cx      pusat X
-     * @param cy      pusat Y
-     * @param w       lebar area karakter
-     * @param h       tinggi area karakter
-     * @param baseCol warna utama karakter
-     * @param flipX   true = cermin horizontal (untuk musuh di sisi kanan)
+     * gc      : GraphicsContext kanvas
+     * cx      : pusat X
+     * cy      : pusat Y
+     * w       : lebar area karakter
+     * h       : tinggi area karakter
+     * baseCol : warna utama karakter
+     * flipX   : true = cermin horizontal (untuk musuh di sisi kanan)
      */
     public void render(GraphicsContext gc, double cx, double cy,
                        double w, double h, Color baseCol, boolean flipX) {
@@ -81,13 +75,13 @@ public class AnimationPlayer {
 
         gc.save();
 
-        // -- Efek hurt: flash putih
+        // Efek hurt: flash putih
         Color drawCol = baseCol;
         if (state == AnimState.HURT) {
             drawCol = (frame % 2 == 0) ? Color.WHITE : baseCol;
         }
 
-        // -- Efek dead: fade ke abu-abu + miring
+        // Efek dead: fade ke abu-abu + miring
         if (state == AnimState.DEAD) {
             double t = (double) frame / DEAD_FRAMES;
             drawCol = baseCol.interpolate(Color.GRAY, t);
@@ -96,7 +90,7 @@ public class AnimationPlayer {
             gc.translate(-cx, -(cy + h * 0.4));
         }
 
-        // -- Idle bob: naik-turun kecil
+        // Idle bob: naik-turun kecil
         double bob = 0;
         if (state == AnimState.IDLE) {
             bob = Math.sin(frame * Math.PI) * 3.0;

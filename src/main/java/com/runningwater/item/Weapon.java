@@ -3,9 +3,7 @@ package com.runningwater.item;
 import com.runningwater.core.Entity;
 import com.runningwater.core.Item;
 
-/**
- * Senjata yang dapat di-equip player; memberi attackBonus saat menyerang.
- */
+// Senjata yang dapat di-equip player.
 public class Weapon extends Item {
     private int attackBonus;
     private String weaponType;

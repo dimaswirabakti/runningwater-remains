@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Mengendalikan loot yang diterima player setelah memenangkan combat.
- */
 public class RewardSystem extends GameSystem {
     private final List<Item> rewardPool;
     private final Random random;

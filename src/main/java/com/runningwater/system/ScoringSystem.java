@@ -2,9 +2,6 @@ package com.runningwater.system;
 
 import com.runningwater.core.GameSystem;
 
-/**
- * Mengelola skor pemain selama game berjalan.
- */
 public class ScoringSystem extends GameSystem {
     private int currentScore;
     private int highScore;
@@ -23,15 +20,15 @@ public class ScoringSystem extends GameSystem {
 
     @Override
     public void UpdateSystem() {
-        // Score update event-driven (lewat AddScore), tidak perlu per-tick.
+        // Score update event-driven (lewat AddScore).
     }
 
-    /** OVERLOADING — versi 1: pakai multiplier internal. */
+    // OVERLOADING 1: pakai multiplier internal.
     public void AddScore(int pts) {
         AddScore(pts, this.multiplier);
     }
 
-    /** OVERLOADING — versi 2: terima multiplier kustom (untuk combo bonus, boss kill, dst). */
+    // OVERLOADING 2: terima multiplier kustom (untuk combo bonus, boss kill, dst). 
     public void AddScore(int pts, float multiplier) {
         int gained = (int) (pts * multiplier);
         this.currentScore += gained;

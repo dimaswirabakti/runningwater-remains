@@ -27,7 +27,7 @@ public class PlayChar extends Entity implements ISavable {
         this.inventory = new ArrayList<>();
     }
 
-    /** Tambah XP dan auto level up bila threshold terlampaui. */
+    // Tambah XP dan auto level up bila threshold terlampaui.
     public void GainXP(int xp) {
         this.experience += xp;
         while (this.experience >= getXPThreshold()) {
@@ -46,13 +46,11 @@ public class PlayChar extends Entity implements ISavable {
         this.health = this.maxHealth;
     }
 
-    /** Menyerang target. Damage = base 10 + attackBonus weapon. */
     public void Attack(Entity target) {
         int dmg = 10 + (equippedWeapon != null ? equippedWeapon.getAttackBonus() : 0);
         target.TakeDamage(dmg);
     }
 
-    /** Ability sederhana: pulihkan 15 HP. */
     public void UseAbility() {
         heal(15);
     }
@@ -63,7 +61,6 @@ public class PlayChar extends Entity implements ISavable {
         position.setY(position.getY() + dir.getY() * speed);
     }
 
-    /** Override TakeDamage untuk menerapkan defense bonus dari armor. */
     @Override
     public void TakeDamage(int dmg) {
         int defense = equippedArmour != null ? equippedArmour.getDefenseBonus() : 0;
@@ -102,7 +99,7 @@ public class PlayChar extends Entity implements ISavable {
     public int getScore() { return score; }
     public void addScore(int pts) { this.score += pts; }
 
-    /* ===== ISavable ===== */
+    // ISavable
 
     @Override
     public Map<String, Object> getSaveData() {

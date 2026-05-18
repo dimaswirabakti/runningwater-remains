@@ -14,15 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-/**
- * Entry point JavaFX — Canvas + AnimationTimer game loop.
- *
- * Alur tiap frame (60 FPS):
- *   1. handleInput  — baca tombol yang sedang/baru ditekan
- *   2. update       — perbarui logika (animasi, timer, state)
- *   3. render       — gambar segalanya ke kanvas dari nol
- *   4. clearJustPressed — reset "baru ditekan" agar tidak terbawa ke frame berikutnya
- */
 public class Main extends Application {
 
     private static final double WIDTH  = 900;
@@ -32,14 +23,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // ── 1. Kanvas ────────────────────────────────────────────────────────
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         StackPane root = new StackPane(canvas);
         root.setStyle("-fx-background-color: black;");
 
         Scene scene = new Scene(root, WIDTH, HEIGHT, Color.BLACK);
 
-        // ── 2. Inisialisasi GameManager & Systems ────────────────────────────
+        // INISIALISASI GAMEMANAGER & SYSTEMS
         GameManager   gm    = GameManager.getInstance();
         InputHandler  input = gm.getInputHandler();
         UIManager     ui    = gm.getUIManager();
@@ -47,14 +37,14 @@ public class Main extends Application {
         gm.Initialize();
         AssetManager.getInstance().loadAll();   // muat semua PNG (kosong untuk sekarang)
 
-        // ── 3. Daftarkan input ke Scene ──────────────────────────────────────
+        // DAFTARKAN INPUT KE SCENE 
         scene.setOnKeyPressed(input::handleKeyPressed);
         scene.setOnKeyReleased(input::handleKeyReleased);
 
-        // ── 4. Layar pertama ─────────────────────────────────────────────────
+        // LAYAR PERTAMA
         ui.ShowMenu(new MainMenuScreen(), false);
 
-        // ── 5. Game Loop ─────────────────────────────────────────────────────
+        // GAME LOOP
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         AnimationTimer gameLoop = new AnimationTimer() {
@@ -89,7 +79,7 @@ public class Main extends Application {
         };
         gameLoop.start();
 
-        // ── 6. Stage setup ───────────────────────────────────────────────────
+        // STAGE SETUP
         primaryStage.setTitle("Runningwater Remains");
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);

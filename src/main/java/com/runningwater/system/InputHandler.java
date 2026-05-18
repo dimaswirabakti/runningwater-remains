@@ -7,9 +7,6 @@ import javafx.scene.input.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Menangkap input keyboard secara real-time.
- */
 public class InputHandler extends GameSystem {
 
     private final Set<KeyCode> keysHeld        = new HashSet<>();

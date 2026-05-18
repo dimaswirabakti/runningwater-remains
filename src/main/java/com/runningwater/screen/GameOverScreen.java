@@ -13,10 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-/**
- * Layar Game Over / Victory.
- * Menggantikan game_over.fxml + GameOverController.
- */
+// Layar Game Over atau Victory.
 public class GameOverScreen implements Screen {
 
     private static final double W = 900;

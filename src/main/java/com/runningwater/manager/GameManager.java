@@ -16,9 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Koordinator pusat seluruh game. Singleton.
- */
+// Koordinator pusat seluruh game.
 public class GameManager implements ISavable {
     private static GameManager instance;
 
@@ -112,7 +110,7 @@ public class GameManager implements ISavable {
 
     public boolean hasSave() { return saveSystem.hasSave(); }
 
-    /* ===== ISavable ===== */
+    // ISavable
 
     @Override
     public Map<String, Object> getSaveData() {
@@ -126,7 +124,7 @@ public class GameManager implements ISavable {
         if (data.get("gameState") != null) this.gameState = data.get("gameState").toString();
     }
 
-    /* ===== Getters ===== */
+    // Getters
 
     public PlayChar       getPlayer()         { return player; }
     public Stages         getActiveStage()    { return activeStage; }

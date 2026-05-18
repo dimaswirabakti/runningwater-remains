@@ -3,9 +3,7 @@ package com.runningwater.item;
 import com.runningwater.core.Entity;
 import com.runningwater.core.Item;
 
-/**
- * Item yang bisa dipakai berkali-kali; memiliki durability.
- */
+// Item yang bisa dipakai berkali-kali; memiliki durability.
 public class Tools extends Item {
     private String effectType;
     private int durability;
@@ -26,7 +24,6 @@ public class Tools extends Item {
     public void Use(Entity target) {
         if (durability <= 0) return;
         durability--;
-        // efek default: damage kecil ke target
         target.TakeDamage(5);
     }
 

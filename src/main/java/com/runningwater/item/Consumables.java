@@ -3,9 +3,7 @@ package com.runningwater.item;
 import com.runningwater.core.Entity;
 import com.runningwater.core.Item;
 
-/**
- * Item sekali pakai (potion, scroll, dst).
- */
+// Item sekali pakai (potion, scroll, dst).
 public class Consumables extends Item {
     private String effectType; // "heal" atau "damage"
     private int effectValue;
@@ -21,7 +19,6 @@ public class Consumables extends Item {
 
     @Override
     public void Use() {
-        // Tanpa target — tidak ada efek; hanya tandai sebagai sudah digunakan.
         if (!isUsed) {
             this.isUsed = true;
         }

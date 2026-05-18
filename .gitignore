@@ -22,5 +22,5 @@ sources.txt
 .DS_Store
 Thumbs.db
 
-# Save files (opsional — kalau mau exclude save dari Git)
+# Save files
 runningwater_save.txt

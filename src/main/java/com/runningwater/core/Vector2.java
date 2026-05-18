@@ -1,8 +1,5 @@
 package com.runningwater.core;
 
-/**
- * Vektor 2 dimensi sederhana untuk merepresentasikan posisi/arah.
- */
 public class Vector2 {
     private float x;
     private float y;

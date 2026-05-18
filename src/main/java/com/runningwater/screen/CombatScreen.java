@@ -29,10 +29,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-/**
- * Layar Combat visual turn-based.
- * Menggantikan combat_screen.fxml + CombatController.
- */
+// Layar Combat visual turn-based.
 public class CombatScreen implements Screen {
 
     private static final double W = 900;

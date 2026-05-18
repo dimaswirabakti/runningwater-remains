@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Stage / level dalam game.
+// Stage atau level dalam game.
 public class Stages implements ISavable {
     private String stageName;
     private int stageLevel;
@@ -22,7 +22,6 @@ public class Stages implements ISavable {
         LoadEnvironment();
     }
 
-    /** Memuat enemy berdasarkan level stage. */
     public void LoadEnvironment() {
         enemyList.clear();
         switch (stageLevel) {
@@ -68,7 +67,7 @@ public class Stages implements ISavable {
     public boolean isCleared() { return isCleared; }
     public List<Enemies> getEnemyList() { return enemyList; }
 
-    /* ISavable */
+    // ISavable
 
     @Override
     public Map<String, Object> getSaveData() {

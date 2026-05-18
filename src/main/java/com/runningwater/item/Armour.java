@@ -3,7 +3,6 @@ package com.runningwater.item;
 import com.runningwater.core.Entity;
 import com.runningwater.core.Item;
 
-// Armor yang dapat di-equip player; mengurangi damage yang diterima.
 public class Armour extends Item {
     private int defenseBonus;
     private String armourType;
@@ -27,7 +26,7 @@ public class Armour extends Item {
 
     @Override
     public void Use(Entity target) {
-        // Armor tidak punya efek pada target lain — overriding dengan no-op.
+        // Armor tidak punya efek pada target lain, overriding dengan no-op.
     }
 
     @Override

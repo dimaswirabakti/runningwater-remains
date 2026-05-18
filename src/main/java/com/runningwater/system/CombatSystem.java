@@ -8,9 +8,7 @@ import com.runningwater.core.GameSystem;
 import com.runningwater.entity.Enemies;
 import com.runningwater.entity.PlayChar;
 
-/**
- * Mengelola alur combat: turn order, perilaku enemy, perhitungan damage.
- */
+// Mengelola alur combat.
 public class CombatSystem extends GameSystem {
     private final List<Entity> turnOrder;
     private final List<String> combatLog;
@@ -33,7 +31,7 @@ public class CombatSystem extends GameSystem {
 
     @Override
     public void UpdateSystem() {
-        // Combat berbasis event (per klik tombol Attack), tidak butuh per-tick logic.
+        // Combat berbasis event (per klik tombol Attack).
     }
 
     public void StartCombat(PlayChar player, List<Enemies> enemies) {
@@ -47,12 +45,12 @@ public class CombatSystem extends GameSystem {
         log("=== Combat dimulai melawan " + enemies.size() + " musuh ===");
     }
 
-    /** Player menyerang target pertama yang masih hidup. */
+    // Player menyerang target pertama yang masih hidup.
     public void PlayerAttack() {
         PlayerAttack(0);
     }
 
-    /** Player menyerang target terpilih, melewati enemy yang sudah mati. */
+    // Player menyerang target terpilih, melewati enemy yang sudah mati.
     public void PlayerAttack(int targetIndex) {
         if (currentEnemies.isEmpty()) return;
         Enemies target = findAliveByIndex(targetIndex);
@@ -66,7 +64,7 @@ public class CombatSystem extends GameSystem {
         }
     }
 
-    /** Setiap enemy yang hidup menyerang player. */
+    // Setiap enemy yang hidup menyerang player.
     public void EnemyTurn() {
         for (Enemies e : currentEnemies) {
             if (!e.isAlive()) continue;
